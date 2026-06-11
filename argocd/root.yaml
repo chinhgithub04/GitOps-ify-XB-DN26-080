@@ -4,6 +4,7 @@ metadata:
   name: root
   namespace: argocd
 spec:
+  project: default
   source:
     repoURL: https://github.com/chinhgithub04/GitOps-ify-XB-DN26-080.git
     path: argocd/apps
