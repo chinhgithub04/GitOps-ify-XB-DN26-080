@@ -1,3 +1,4 @@
+# Lab 7: Initial test for CI
 apiVersion: v1
 kind: ConfigMap
 metadata:
