@@ -17,7 +17,7 @@ spec:
       - name: http-echo
         image: hashicorp/http-echo:1.0
         args:
-        - -text={"message":"Hello from Go Backend API! GitOps is awesome!"}
+        - -text={"message":"XB-DN26-080 Nguyễn Đức Chinh"}
         ports:
         - containerPort: 5678
 ---
