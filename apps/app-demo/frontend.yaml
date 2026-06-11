@@ -92,7 +92,7 @@ data:
     <body>
         <div class="card">
             <div class="badge">App-of-apps Synced</div>
-            <h1>GitOps Demo Portal</h1>
+            <h1>GitOps-ify Demo Portal</h1>
             <p>This frontend is served dynamically by Nginx, managed inside the <code>demo</code> namespace, and synchronized 100% via ArgoCD.</p>
             <p>Message from Backend API:</p>
             <div id="backend-msg" class="status-box">Connecting to backend...</div>
