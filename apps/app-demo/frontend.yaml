@@ -1,0 +1,161 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: demo
+data:
+  default.conf: |
+    server {
+        listen 80;
+        server_name localhost;
+
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+        }
+
+        location /api {
+            proxy_pass http://backend-service:80/;
+            proxy_http_version 1.1;
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-html
+  namespace: demo
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GitOps Demo App</title>
+        <style>
+            body {
+                background: #0f172a;
+                color: #f8fafc;
+                font-family: 'Outfit', system-ui, sans-serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin: 0;
+            }
+            .card {
+                background: #1e293b;
+                padding: 40px;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                text-align: center;
+                max-width: 450px;
+                border: 1px solid #334155;
+            }
+            h1 {
+                background: linear-gradient(to right, #3b82f6, #10b981);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-top: 0;
+                font-size: 2.2rem;
+            }
+            p {
+                color: #94a3b8;
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+            .status-box {
+                background: #020617;
+                padding: 15px;
+                border-radius: 8px;
+                font-family: monospace;
+                color: #10b981;
+                margin-top: 25px;
+                border: 1px solid #1e293b;
+                font-size: 1rem;
+                word-break: break-all;
+            }
+            .badge {
+                display: inline-block;
+                background: #1e1b4b;
+                color: #818cf8;
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: bold;
+                margin-bottom: 20px;
+                border: 1px solid #312e81;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div class="badge">App-of-apps Synced</div>
+            <h1>GitOps Demo Portal</h1>
+            <p>This frontend is served dynamically by Nginx, managed inside the <code>demo</code> namespace, and synchronized 100% via ArgoCD.</p>
+            <p>Message from Backend API:</p>
+            <div id="backend-msg" class="status-box">Connecting to backend...</div>
+        </div>
+        <script>
+            fetch('/api')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP error! Status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('backend-msg').innerText = data.message;
+                })
+                .catch(error => {
+                    document.getElementById('backend-msg').innerText = 'API Connection Error: ' + error.message;
+                });
+        </script>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.27
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/conf.d
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: config-volume
+        configMap:
+          name: frontend-config
+      - name: html-volume
+        configMap:
+          name: frontend-html
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: demo
+spec:
+  selector:
+    app: frontend
+  ports:
+  - port: 80
+    targetPort: 80

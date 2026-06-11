@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-demo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/chinhgithub04/GitOps-ify-XB-DN26-080.git
+    path: apps/app-demo
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: demo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
