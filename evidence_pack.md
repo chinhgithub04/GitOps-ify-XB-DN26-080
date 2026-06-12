@@ -18,6 +18,12 @@ Các tài nguyên được khởi tạo theo đúng trình tự bắt buộc nh�
 Mã nguồn được kiểm duyệt tự động bằng GitHub Actions (chạy `kubeconform` để kiểm tra lỗi cú pháp YAML). Quyền push thẳng vào nhánh `main` bị khóa chặt, mọi thay đổi phải qua Pull Request và CI xanh mới được merge.
 ![Github Actions và Branch Protection](./media/4_github_actions_ci.png)
 
+### 1.5. Triển khai Ứng dụng Demo (Frontend & Backend)
+Triển khai thành công ứng dụng demo đa tầng trong namespace `demo` gồm:
+*   **Backend**: Sử dụng `hashicorp/http-echo` trả về cấu trúc JSON chứa tên học viên: `{"message":"XB-DN26-080 Nguyễn Đức Chinh"}`.
+*   **Frontend**: Chạy Nginx đóng vai trò Web Server phục vụ giao diện HTML/JS tĩnh, đồng thời reverse proxy cổng `/api` về `backend-service`. Khi người dùng truy cập, Frontend sẽ gọi API để hiển thị lời chào động từ Backend.
+![Giao diện Ứng dụng Demo (Frontend kết nối Backend)](./media/11_frontend_backend_ui.png)
+
 ---
 
 ## Phần 2: Observability (Giám sát & Đo lường)
