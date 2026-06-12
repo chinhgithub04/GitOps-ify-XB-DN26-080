@@ -17,9 +17,11 @@ spec:
         alertmanager:
           config:
             global:
-              smtp_smarthost: 'maildev.demo.svc:1025'
-              smtp_from: 'alertmanager@prometheus.local'
-              smtp_require_tls: false
+              smtp_smarthost: 'smtp.gmail.com:587'
+              smtp_from: 'nguyenducchinhdev@gmail.com'
+              smtp_auth_username: 'nguyenducchinhdev@gmail.com'
+              smtp_auth_password: 'GMAIL_APP_PASSWORD_PLACEHOLDER'
+              smtp_require_tls: true
             route:
               receiver: 'email-notifications'
               group_by: ['alertname']
@@ -29,7 +31,7 @@ spec:
             receivers:
             - name: 'email-notifications'
               email_configs:
-              - to: 'chinhgithub04@example.com'
+              - to: 'nguyenducchinhdev@gmail.com'
                 send_resolved: true
   destination:
     server: https://kubernetes.default.svc
@@ -37,7 +39,7 @@ spec:
   syncPolicy:
     automated:
       prune: true
-      selfHeal: true
+      selfHeal: false
     syncOptions:
     - CreateNamespace=true
     - ServerSideApply=true
