@@ -30,6 +30,14 @@ Ngăn xếp giám sát toàn diện đã được triển khai tự động qua 
 Dịch vụ Python Flask `w9-api` phơi bày các chỉ số tùy chỉnh (số lượng request, mã lỗi 500) và được Prometheus tự động Scrape thông qua ServiceMonitor.
 ![Biểu đồ truy vấn Metrics trên Prometheus UI](./media/6_prometheus_metrics_ui.png)
 
+### 2.3. Thiết lập Chỉ số Đo lường (SLI/SLO)
+Để đảm bảo chất lượng dịch vụ, chúng ta thiết lập các chỉ số SLO và SLI cụ thể cho dịch vụ API:
+*   **SLI (Chỉ số đo lường thực tế)**: Tỷ lệ các HTTP requests trả về mã thành công (non-5xx) trên tổng số requests nhận được trong vòng 30 giây qua.
+    *   *Công thức*: `sum(rate(flask_http_request_total{status!~"5.."}[30s])) / sum(rate(flask_http_request_total{}[30s]))`
+*   **SLO (Mục tiêu cam kết nội bộ)**: Mức độ tin cậy mục tiêu được đặt ra là **95% Success Rate** (tương đương tỷ lệ lỗi 5xx không vượt quá **5%**).
+*   **Cấu hình Cảnh báo (PrometheusRule)**: Định nghĩa trong `alerts.yaml`. Nếu tỷ lệ lỗi 5xx vượt quá **5%** (tức là vi phạm SLO), hệ thống sẽ ngay lập tức kích hoạt cảnh báo `ApiHighErrorRate`.
+    *   *Query*: `sum(rate(flask_http_request_total{status=~"5..", job="api", namespace="demo"}[30s])) / sum(rate(flask_http_request_total{job="api", namespace="demo"}[30s])) > 0.05`
+
 ---
 
 ## Phần 3: Automated Canary Deployments
