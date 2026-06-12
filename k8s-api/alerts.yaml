@@ -11,7 +11,7 @@ spec:
   - name: api-quality
     rules:
     - alert: ApiHighErrorRate
-      expr: sum(rate(flask_http_request_total{status=~"5..", job="api", namespace="demo"}[2m])) / sum(rate(flask_http_request_total{job="api", namespace="demo"}[2m])) > 0.05
+      expr: sum(rate(flask_http_request_total{status=~"5..", job="api", namespace="demo"}[30s])) / sum(rate(flask_http_request_total{job="api", namespace="demo"}[30s])) > 0.05
       for: 10s
       labels:
         severity: critical

@@ -13,6 +13,6 @@ spec:
       prometheus:
         address: http://kube-prometheus-stack-prometheus.monitoring:9090
         query: |
-          sum(rate(flask_http_request_total{status!~"5.*", job="api", namespace="demo"}[2m])) 
+          sum(rate(flask_http_request_total{status!~"5.*", job="api", namespace="demo"}[30s])) 
           / 
-          (sum(rate(flask_http_request_total{job="api", namespace="demo"}[2m])) + 0.001)
+          (sum(rate(flask_http_request_total{job="api", namespace="demo"}[30s])) + 0.001)
