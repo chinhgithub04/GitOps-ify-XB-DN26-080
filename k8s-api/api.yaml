@@ -33,9 +33,13 @@ spec:
             port: 8080
   strategy:
     canary:
+      analysis:
+        templates:
+        - templateName: success-rate
       steps:
       - setWeight: 25
-      - pause: {}        # Dừng vô hạn để chờ promote thủ công bằng tay ở Lab 4
+      - pause:
+          duration: 30s
       - setWeight: 50
       - pause:
           duration: 30s
