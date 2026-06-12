@@ -4,6 +4,8 @@ metadata:
   name: success-rate
   namespace: demo
 spec:
+  args:
+  - name: canary-hash
   metrics:
   - name: success-rate
     interval: 10s
@@ -13,6 +15,6 @@ spec:
       prometheus:
         address: http://kube-prometheus-stack-prometheus.monitoring:9090
         query: |
-          sum(rate(flask_http_request_total{status!~"5.*", job="api", namespace="demo"}[30s])) 
+          sum(rate(flask_http_request_total{status!~"5.*", job="api", namespace="demo", pod=~"api-{{args.canary-hash}}-.*"}[30s])) 
           / 
-          (sum(rate(flask_http_request_total{job="api", namespace="demo"}[30s])) + 0.001)
+          (sum(rate(flask_http_request_total{job="api", namespace="demo", pod=~"api-{{args.canary-hash}}-.*"}[30s])) + 0.001)
