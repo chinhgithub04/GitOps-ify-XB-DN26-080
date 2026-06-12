@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: api
-  # Triggering a fresh canary run with 120s pauses for email alert
+  # Triggering a fresh canary run with delayed abort to allow email alert to fire
   namespace: demo
   labels:
     app: api
